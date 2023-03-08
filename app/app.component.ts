@@ -6,13 +6,183 @@ import {
   FormControl,
 } from '@angular/forms';
 
+export const data = {
+  entity: {
+    header: {
+
+    },
+    fields: [
+      {
+        name: 'Surname',
+        displayName: 'Surname',
+        value: 'Bush',
+        dataType: 'STRING',
+        displayLevel1: 'Main',
+        displayLevel2: 'Personal Details',
+        displayLevel3: '',
+        maxLength: 0,
+        mandatory: false,
+        validationRule: null
+      },
+      {
+        name: 'Forename1',
+        displayName: 'Forename(1)',
+        value: 'Christian',
+        dataType: 'STRING',
+        displayLevel1: 'Main',
+        displayLevel2: 'Personal Details',
+        displayLevel3: '',
+        maxLength: 20,
+        mandatory: true,
+        validationRule: null
+      },
+      {
+        name: 'Forename2',
+        displayName: 'Forename(2)',
+        value: null,
+        dataType: 'STRING',
+        displayLevel1: 'Main',
+        displayLevel2: 'Personal Details',
+        displayLevel3: '',
+        maxLength: 20,
+        mandatory: false,
+        validationRule: null
+      },
+      {
+        name: 'Forename3',
+        displayName: 'Forename(3)',
+        value: null,
+        dataType: 'STRING',
+        displayLevel1: 'Main',
+        displayLevel2: 'Personal Details',
+        displayLevel3: '',
+        maxLength: 20,
+        mandatory: false,
+        validationRule: null
+      },
+      {
+        name: 'Nickname',
+        displayName: 'Nickname',
+        value: 'Weedy',
+        dataType: 'STRING',
+        displayLevel1: 'Main',
+        displayLevel2: 'Personal Details',
+        displayLevel3: '',
+        maxLength: 20,
+        mandatory: false,
+        validationRule: null
+      },
+      {
+        name: 'Gender',
+        displayName: 'Gender',
+        value: 'Male',
+        dataType: 'ENUM',
+        displayLevel1: 'Main',
+        displayLevel2: 'Personal Details',
+        displayLevel3: '',
+        values: ['Male', 'Female', 'Unknown'],
+        maxLength: 20,
+        mandatory: true,
+        validationRule: null
+      },
+      {
+        name: 'Date_of_Birth',
+        displayName: 'Date of Birth',
+        value: '05/04/1979',
+        dataType: 'DATE',
+        displayLevel1: 'Main',
+        displayLevel2: 'Personal Details',
+        displayLevel3: '',
+        maxLength: 20,
+        mandatory: true,
+        validationRule: null
+      },
+      {
+        name: 'Marital_Status',
+        displayName: 'Marital Status',
+        value: 'Divorced',
+        dataType: 'ENUM',
+        displayLevel1: 'Main',
+        displayLevel2: 'Personal Details',
+        displayLevel3: '',
+        values: ['Divorced', 'Married', 'Other'],
+        maxLength: 20,
+        mandatory: true,
+        validationRule: null
+      },
+      {
+        name: 'Main Tab 1 name',
+        displayName: 'Main Tab 1 displayname',
+        value: 'Main Tab 1 value',
+        dataType: 'ENUM',
+        displayLevel1: 'Main',
+        displayLevel2: 'Main Tab 1',
+        displayLevel3: '',
+        values: ['W1 - White - British', 'W2 - Irish - British', 'A1 - Asian - British'],
+        maxLength: 20,
+        mandatory: true,
+        validationRule: null
+      },
+      {
+        name: 'Main Tab 2 name',
+        displayName: 'Main Tab 2 displayname',
+        value: 'true',
+        dataType: 'BOOLEAN',
+        displayLevel1: 'Main',
+        displayLevel2: 'Main Tab 2',
+        displayLevel3: '',
+        maxLength: 20,
+        mandatory: true,
+        validationRule: null
+      },
+      {
+        name: 'Main Tab 3 name',
+        displayName: 'Main Tab 3 displayname',
+        value: 'Main Tab 3 value',
+        dataType: 'STRING',
+        displayLevel1: 'Main',
+        displayLevel2: 'Main Tab 3',
+        displayLevel3: '',
+        maxLength: 20,
+        mandatory: true,
+        validationRule: null
+      },
+      {
+        name: 'Main Tab 4 name',
+        displayName: 'Main Tab 4 displayname',
+        value: 'Main Tab 4 value',
+        dataType: 'STRING',
+        displayLevel1: 'Main',
+        displayLevel2: 'Main Tab 4',
+        displayLevel3: '',
+        maxLength: 20,
+        mandatory: true,
+        validationRule: null
+      },
+      {
+        name: 'Manangement name',
+        displayName: 'Management display name',
+        value: 'Manangement value',
+        dataType: 'STRING',
+        displayLevel1: 'Management',
+        displayLevel2: 'Management tab 1',
+        displayLevel3: '',
+        maxLength: 20,
+        mandatory: true,
+        validationRule: null
+      }
+    ]
+  }
+};
+
 @Component({
   selector: 'my-app',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  @Input() data;
+  data = data;
+  
 
   public form: FormGroup;
   public editing = false;
@@ -172,6 +342,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.data)
     this.fields = this.data.entity.fields;
     this.handleInitialSetup(this.fields);
   }

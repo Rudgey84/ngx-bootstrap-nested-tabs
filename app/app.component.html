@@ -1,71 +1,146 @@
-<form class="mt-5" [formGroup]="form">
-<ng-container [formGroup]="form.get('fields')">
-  <tabset class="variant-top-border nav-container bordered">
-    <ng-container *ngFor="let tab of availableTabs">
-      <tab heading="{{ tab }} // tab" id="{{ tab }}">
-        <div class="row m-1" [formGroupName]="tab">
-          <tabset class="col-12" style="display: inherit" [vertical]="true" type="pills">
-            <ng-container *ngFor="let pill of availablePills[tab]" [formGroupName]="pill">
-              <tab heading="{{ pill }} // pill">
-                <ng-container *ngFor="let data of tabsAndPills[tab][pill]; let i = index">
+<div class="p-3" [formGroup]="form.get('fields')">
+<tabset class="variant-top-border nav-container bordered">
+  <ng-container *ngFor="let tab of availableTabs; index as availableTabsIndex">
+    <tab heading="{{ tab }}" id="{{ tab }}" [active]="availableTabsIndex === 0">
+      <div class="row m-1" [formGroupName]="tab">
+        <tabset class="col-12 mb-3" style="display: inherit" [vertical]="true" type="pills">
+          <ng-container *ngFor="let pill of availablePills[tab]; index as availablePillsIndex" [formGroupName]="pill">
+            <tab heading="{{ pill }}" [active]="availablePillsIndex === 0">
+              <ng-container *ngFor="let data of tabsAndPills[tab][pill]; let i = index">
+                <!--NOT EDIT MODE-->
+                <div *ngIf="!editing && data['value']" [ngSwitch]="data['dataType']">
                   <p class="text-muted mb-1">{{ data['displayName'] }}</p>
-                  <!--NOT EDIT MODE-->
-                  <container-element *ngIf="!editing" [ngSwitch]="data['dataType']">
-                    <!--CHANGE BOOL T/F to Y/N-->
-                    <some-element *ngSwitchCase="'BOOLEAN'">
-                      <p class="font-weight-bold">{{ data['value'] === 'true' ? 'Yes' : 'No' }}</p>
-                    </some-element>
-                    <some-element *ngSwitchDefault
-                      ><p class="font-weight-bold">{{ data['value'] }}</p>
-                    </some-element>
-                  </container-element>
-                  <!--EDIT MODE-->
-                  <ng-container *ngIf="editing">
-                    <container-element [ngSwitch]="data['dataType']">
+                  <!--CHANGE BOOL T/F to Y/N-->
+                  <div *ngSwitchCase="'BOOLEAN'">
+                    <p class="font-weight-bold">{{ data['value'] === 'true' ? 'Yes' : 'No' }}</p>
+                  </div>
+                  <div *ngSwitchDefault>
+                    <p class="font-weight-bold">{{ data['value'] }}</p>
+                  </div>
+                </div>
+                <!--EDIT MODE-->
+                <ng-container *ngIf="editing">
+                  <div class="form-group">
+                    <label
+                      *ngIf="data['mandatory']; else notRequiredLabel"
+                      for="data['displayName']"
+                      appRequiredLabel
+                      >{{ data['displayName'] }}</label
+                    >
+                    <template #notRequiredLabel>
+                      <label for="data['displayName']">{{ data['displayName'] }}</label>
+                    </template>
+                    <div [ngSwitch]="data['dataType']">
                       <!--TEXT FIELDS-->
-                      <some-element *ngSwitchCase="'STRING'">
-                        <input [id]="i" class="form-control mb-3" [required]="data['isMandatory']" type="text" #dataName [maxLength]="data['maxLength']" [formControlName]="data['name']" />
-                        <app-max-character-length [element]="dataName"></app-max-character-length>
-
-                        <!-- <div *ngFor="let tom of form.get('fields').controls">
-                          <pre>controls<br /><code>{{ form.controls.fields['controls'].Main['controls'].Descriptors.value | json }}</code></pre>
-                          <div *ngIf="i === 1" class="text-danger small">{{ data['displayName'] }} is required // {{ tom }}</div>
-                        </div> -->
-                      </some-element>
+                      <div *ngSwitchCase="'STRING'">
+                        <input
+                          [id]="i"
+                          class="form-control mb-1"
+                          [required]="data['mandatory']"
+                          type="text"
+                          #dataName
+                          [maxlength]="data['maxLength'] != 0 ? data['maxLength'] : null"
+                          [formControlName]="data['name']"
+                        />
+                        <div
+                          class="text-danger mb-1 small"
+                          *ngIf="form.get('fields').get(tab).get(pill).get(data.name).invalid"
+                        >
+                          {{ data['displayName'] }} is required
+                        </div>
+                      </div>
                       <!--SELECTS-->
-                      <some-element *ngSwitchCase="'ENUM'"><input class="form-control mb-3" type="text" [formControlName]="data['name']" /></some-element>
+                      <div *ngSwitchCase="'ENUM'">
+                        <select
+                          class="form-control mb-3"
+                          [required]="data['mandatory']"
+                          [formControlName]="data['name']"
+                        >
+                          <option value=""></option>
+                          <option *ngFor="let selectValue of data['values']" [value]="selectValue">
+                            {{ selectValue }}
+                          </option>
+                        </select>
+                        <div
+                          class="text-danger mb-1 small"
+                          *ngIf="form.get('fields').get(tab).get(pill).get(data.name).invalid"
+                        >
+                          {{ data['displayName'] }} is required
+                        </div>
+                      </div>
                       <!--DATE FIELDS-->
-                      <some-element *ngSwitchCase="'DATE'">
-                        <input autocomplete="off" type="text" [formControlName]="data['name']" class="form-control mb-3" bsDatepicker placeholder="dd/mm/yyyy" tooltip="Select date"
-                      /></some-element>
+                      <div *ngSwitchCase="'DATE'">
+                        <input
+                          autocomplete="off"
+                          type="text"
+                          [required]="data['mandatory']"
+                          [formControlName]="data['name']"
+                          class="form-control mb-3"
+                          bsDatepicker
+                          placeholder="dd/mm/yyyy"
+                          tooltip="Select date"
+                        />
+                        <div
+                          class="text-danger mb-1 small"
+                          *ngIf="form.get('fields').get(tab).get(pill).get(data.name).invalid"
+                        >
+                          {{ data['displayName'] }} is required
+                        </div>
+                      </div>
                       <!--BOOLEAN-->
-                      <some-element *ngSwitchCase="'BOOLEAN'">
-                        <div class="form-check-inline">
+                      <div *ngSwitchCase="'BOOLEAN'">
+                        <div class="form-check form-check-inline">
                           <label class="col-12 customradio"
                             ><span>Yes</span>
-                            <input [ngClass]="{ checked: data['name'] === 'true' }" [formControlName]="data['name']" [value]="'true'" type="radio" />
-                            <span class="checkmark"></span>
-                          </label>
-                          <label class="col-12 customradio"
-                            ><span>No</span>
-                            <input [ngClass]="{ checked: data['name'] === 'false' }" [formControlName]="data['name']" [value]="'false'" type="radio" />
+                            <input
+                              [ngClass]="{ checked: data['name'] === 'true' }"
+                              [required]="data['mandatory']"
+                              [formControlName]="data['name']"
+                              [value]="'true'"
+                              type="radio"
+                            />
                             <span class="checkmark"></span>
                           </label>
                         </div>
-                      </some-element>
-                    </container-element>
-                  </ng-container>
+                        <div class="form-check form-check-inline">
+                          <label class="col-12 customradio"
+                            ><span>No</span>
+                            <input
+                              [ngClass]="{ checked: data['name'] === 'false' }"
+                              [required]="data['mandatory']"
+                              [formControlName]="data['name']"
+                              [value]="'false'"
+                              type="radio"
+                            />
+                            <span class="checkmark"></span>
+                          </label>
+                        </div>
+                        <div
+                          class="text-danger mb-1 small"
+                          *ngIf="form.get('fields').get(tab).get(pill).get(data.name).invalid"
+                        >
+                          {{ data['displayName'] }} is required
+                        </div>
+                      </div>
+                      <!--NUMBER FIELDS-->
+                      <div *ngSwitchCase="'NUMBER'">
+                        <input type="number" class="form-control col-6 mb-3" [formControlName]="data['name']" />
+                        <div
+                          class="text-danger mb-1 small"
+                          *ngIf="form.get('fields').get(tab).get(pill).get(data.name).invalid"
+                        >
+                          {{ data['displayName'] }} is required
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </ng-container>
-              </tab>
-            </ng-container>
-          </tabset>
-        </div>
-      </tab>
-    </ng-container>
-  </tabset>
-</ng-container>
-
-<button (click)="editing = !editing; onEdit()" class="btn btn-link btn-sm px-0">Edit</button>
-
-<button id="savebutton" class="btn btn-success mr-2" [disabled]="!form.valid">Save</button>
-</form>
+              </ng-container>
+            </tab>
+          </ng-container>
+        </tabset>
+      </div>
+    </tab>
+  </ng-container>
+</tabset>
+</div>
