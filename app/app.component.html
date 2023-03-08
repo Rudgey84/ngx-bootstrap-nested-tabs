@@ -1,0 +1,71 @@
+<form class="mt-5" [formGroup]="form">
+<ng-container [formGroup]="form.get('fields')">
+  <tabset class="variant-top-border nav-container bordered">
+    <ng-container *ngFor="let tab of availableTabs">
+      <tab heading="{{ tab }} // tab" id="{{ tab }}">
+        <div class="row m-1" [formGroupName]="tab">
+          <tabset class="col-12" style="display: inherit" [vertical]="true" type="pills">
+            <ng-container *ngFor="let pill of availablePills[tab]" [formGroupName]="pill">
+              <tab heading="{{ pill }} // pill">
+                <ng-container *ngFor="let data of tabsAndPills[tab][pill]; let i = index">
+                  <p class="text-muted mb-1">{{ data['displayName'] }}</p>
+                  <!--NOT EDIT MODE-->
+                  <container-element *ngIf="!editing" [ngSwitch]="data['dataType']">
+                    <!--CHANGE BOOL T/F to Y/N-->
+                    <some-element *ngSwitchCase="'BOOLEAN'">
+                      <p class="font-weight-bold">{{ data['value'] === 'true' ? 'Yes' : 'No' }}</p>
+                    </some-element>
+                    <some-element *ngSwitchDefault
+                      ><p class="font-weight-bold">{{ data['value'] }}</p>
+                    </some-element>
+                  </container-element>
+                  <!--EDIT MODE-->
+                  <ng-container *ngIf="editing">
+                    <container-element [ngSwitch]="data['dataType']">
+                      <!--TEXT FIELDS-->
+                      <some-element *ngSwitchCase="'STRING'">
+                        <input [id]="i" class="form-control mb-3" [required]="data['isMandatory']" type="text" #dataName [maxLength]="data['maxLength']" [formControlName]="data['name']" />
+                        <app-max-character-length [element]="dataName"></app-max-character-length>
+
+                        <!-- <div *ngFor="let tom of form.get('fields').controls">
+                          <pre>controls<br /><code>{{ form.controls.fields['controls'].Main['controls'].Descriptors.value | json }}</code></pre>
+                          <div *ngIf="i === 1" class="text-danger small">{{ data['displayName'] }} is required // {{ tom }}</div>
+                        </div> -->
+                      </some-element>
+                      <!--SELECTS-->
+                      <some-element *ngSwitchCase="'ENUM'"><input class="form-control mb-3" type="text" [formControlName]="data['name']" /></some-element>
+                      <!--DATE FIELDS-->
+                      <some-element *ngSwitchCase="'DATE'">
+                        <input autocomplete="off" type="text" [formControlName]="data['name']" class="form-control mb-3" bsDatepicker placeholder="dd/mm/yyyy" tooltip="Select date"
+                      /></some-element>
+                      <!--BOOLEAN-->
+                      <some-element *ngSwitchCase="'BOOLEAN'">
+                        <div class="form-check-inline">
+                          <label class="col-12 customradio"
+                            ><span>Yes</span>
+                            <input [ngClass]="{ checked: data['name'] === 'true' }" [formControlName]="data['name']" [value]="'true'" type="radio" />
+                            <span class="checkmark"></span>
+                          </label>
+                          <label class="col-12 customradio"
+                            ><span>No</span>
+                            <input [ngClass]="{ checked: data['name'] === 'false' }" [formControlName]="data['name']" [value]="'false'" type="radio" />
+                            <span class="checkmark"></span>
+                          </label>
+                        </div>
+                      </some-element>
+                    </container-element>
+                  </ng-container>
+                </ng-container>
+              </tab>
+            </ng-container>
+          </tabset>
+        </div>
+      </tab>
+    </ng-container>
+  </tabset>
+</ng-container>
+
+<button (click)="editing = !editing; onEdit()" class="btn btn-link btn-sm px-0">Edit</button>
+
+<button id="savebutton" class="btn btn-success mr-2" [disabled]="!form.valid">Save</button>
+</form>
