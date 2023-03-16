@@ -185,7 +185,7 @@ export class AppComponent implements OnInit {
   
 
   public form: FormGroup;
-  public editing = false;
+  public editing = true;
   public fields;
   public availableTabs: string[];
   public availablePills;
@@ -253,6 +253,7 @@ export class AppComponent implements OnInit {
         dataType,
         maxLength,
         isMandatory,
+        values
       } = filter;
 
       // Create level 1 obj (tabs)...
@@ -272,6 +273,7 @@ export class AppComponent implements OnInit {
         dataType,
         maxLength,
         isMandatory,
+        values
       });
     });
 
@@ -343,6 +345,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.data)
+    
     this.fields = this.data.entity.fields;
     this.handleInitialSetup(this.fields);
   }

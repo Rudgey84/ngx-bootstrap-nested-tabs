@@ -1,146 +1,220 @@
 <div class="p-3" [formGroup]="form.get('fields')">
-<tabset class="variant-top-border nav-container bordered">
-  <ng-container *ngFor="let tab of availableTabs; index as availableTabsIndex">
-    <tab heading="{{ tab }}" id="{{ tab }}" [active]="availableTabsIndex === 0">
-      <div class="row m-1" [formGroupName]="tab">
-        <tabset class="col-12 mb-3" style="display: inherit" [vertical]="true" type="pills">
-          <ng-container *ngFor="let pill of availablePills[tab]; index as availablePillsIndex" [formGroupName]="pill">
-            <tab heading="{{ pill }}" [active]="availablePillsIndex === 0">
-              <ng-container *ngFor="let data of tabsAndPills[tab][pill]; let i = index">
-                <!--NOT EDIT MODE-->
-                <div *ngIf="!editing && data['value']" [ngSwitch]="data['dataType']">
-                  <p class="text-muted mb-1">{{ data['displayName'] }}</p>
-                  <!--CHANGE BOOL T/F to Y/N-->
-                  <div *ngSwitchCase="'BOOLEAN'">
-                    <p class="font-weight-bold">{{ data['value'] === 'true' ? 'Yes' : 'No' }}</p>
+  <tabset class="variant-top-border nav-container bordered">
+    <ng-container
+      *ngFor="let tab of availableTabs; index as availableTabsIndex"
+    >
+      <tab
+        heading="{{ tab }}"
+        id="{{ tab }}"
+        [active]="availableTabsIndex === 0"
+      >
+        <div class="row m-1" [formGroupName]="tab">
+          <tabset
+            class="col-12 mb-3"
+            style="display: inherit"
+            [vertical]="true"
+            type="pills"
+          >
+            <ng-container
+              *ngFor="
+                let pill of availablePills[tab];
+                index as availablePillsIndex
+              "
+              [formGroupName]="pill"
+            >
+              <tab heading="{{ pill }}" [active]="availablePillsIndex === 0">
+                <ng-container
+                  *ngFor="let data of tabsAndPills[tab][pill]; let i = index"
+                >
+                  <!--NOT EDIT MODE-->
+                  <div
+                    *ngIf="!editing && data['value']"
+                    [ngSwitch]="data['dataType']"
+                  >
+                    <p class="text-muted mb-1">{{ data['displayName'] }}</p>
+                    <!--CHANGE BOOL T/F to Y/N-->
+                    <div *ngSwitchCase="'BOOLEAN'">
+                      <p class="font-weight-bold">
+                        {{ data['value'] === 'true' ? 'Yes' : 'No' }}
+                      </p>
+                    </div>
+                    <div *ngSwitchDefault>
+                      <p class="font-weight-bold">{{ data['value'] }}</p>
+                    </div>
                   </div>
-                  <div *ngSwitchDefault>
-                    <p class="font-weight-bold">{{ data['value'] }}</p>
-                  </div>
-                </div>
-                <!--EDIT MODE-->
-                <ng-container *ngIf="editing">
-                  <div class="form-group">
-                    <label
-                      *ngIf="data['mandatory']; else notRequiredLabel"
-                      for="data['displayName']"
-                      appRequiredLabel
-                      >{{ data['displayName'] }}</label
-                    >
-                    <template #notRequiredLabel>
-                      <label for="data['displayName']">{{ data['displayName'] }}</label>
-                    </template>
-                    <div [ngSwitch]="data['dataType']">
-                      <!--TEXT FIELDS-->
-                      <div *ngSwitchCase="'STRING'">
-                        <input
-                          [id]="i"
-                          class="form-control mb-1"
-                          [required]="data['mandatory']"
-                          type="text"
-                          #dataName
-                          [maxlength]="data['maxLength'] != 0 ? data['maxLength'] : null"
-                          [formControlName]="data['name']"
-                        />
-                        <div
-                          class="text-danger mb-1 small"
-                          *ngIf="form.get('fields').get(tab).get(pill).get(data.name).invalid"
-                        >
-                          {{ data['displayName'] }} is required
+                  <!--EDIT MODE-->
+                  <ng-container *ngIf="editing">
+                    <div class="form-group">
+                      <label
+                        *ngIf="data['mandatory']; else notRequiredLabel"
+                        for="data['displayName']"
+                        appRequiredLabel
+                        >{{ data['displayName'] }}</label
+                      >
+                      <template #notRequiredLabel>
+                        <label for="data['displayName']">{{
+                          data['displayName']
+                        }}</label>
+                      </template>
+                      <div [ngSwitch]="data['dataType']">
+                        <!--TEXT FIELDS-->
+                        <div *ngSwitchCase="'STRING'">
+                          <input
+                            [id]="i"
+                            class="form-control mb-1"
+                            [required]="data['mandatory']"
+                            type="text"
+                            #dataName
+                            [maxlength]="
+                              data['maxLength'] != 0 ? data['maxLength'] : null
+                            "
+                            [formControlName]="data['name']"
+                          />
+                          <div
+                            class="text-danger mb-1 small"
+                            *ngIf="
+                              form
+                                .get('fields')
+                                .get(tab)
+                                .get(pill)
+                                .get(data.name).invalid
+                            "
+                          >
+                            {{ data['displayName'] }} is required
+                          </div>
                         </div>
-                      </div>
-                      <!--SELECTS-->
-                      <div *ngSwitchCase="'ENUM'">
-                        <select
-                          class="form-control mb-3"
-                          [required]="data['mandatory']"
-                          [formControlName]="data['name']"
-                        >
-                          <option value=""></option>
-                          <option *ngFor="let selectValue of data['values']" [value]="selectValue">
-                            {{ selectValue }}
-                          </option>
-                        </select>
-                        <div
-                          class="text-danger mb-1 small"
-                          *ngIf="form.get('fields').get(tab).get(pill).get(data.name).invalid"
-                        >
-                          {{ data['displayName'] }} is required
+                        <!--TEXTAREA FIELDS-->
+                        <div *ngSwitchCase="'TEXTAREA'">
+                          <textarea
+                            [formControlName]="data['name']"
+                            class="form-control mb-3 col-6"
+                          ></textarea>
                         </div>
-                      </div>
-                      <!--DATE FIELDS-->
-                      <div *ngSwitchCase="'DATE'">
-                        <input
-                          autocomplete="off"
-                          type="text"
-                          [required]="data['mandatory']"
-                          [formControlName]="data['name']"
-                          class="form-control mb-3"
-                          bsDatepicker
-                          placeholder="dd/mm/yyyy"
-                          tooltip="Select date"
-                        />
-                        <div
-                          class="text-danger mb-1 small"
-                          *ngIf="form.get('fields').get(tab).get(pill).get(data.name).invalid"
-                        >
-                          {{ data['displayName'] }} is required
+                        <!--SELECTS-->
+                        <div *ngSwitchCase="'ENUM'">
+                          <select
+                            class="form-control mb-3"
+                            [required]="data['mandatory']"
+                            [formControlName]="data['name']"
+                          >
+                            <option value=""></option>
+                            <option
+                              *ngFor="let selectValue of data['values']"
+                              [value]="selectValue"
+                            >
+                              {{ selectValue }}
+                            </option>
+                          </select>
+                          <div
+                            class="text-danger mb-1 small"
+                            *ngIf="
+                              form
+                                .get('fields')
+                                .get(tab)
+                                .get(pill)
+                                .get(data.name).invalid
+                            "
+                          >
+                            {{ data['displayName'] }} is required
+                          </div>
                         </div>
-                      </div>
-                      <!--BOOLEAN-->
-                      <div *ngSwitchCase="'BOOLEAN'">
-                        <div class="form-check form-check-inline">
-                          <label class="col-12 customradio"
-                            ><span>Yes</span>
-                            <input
-                              [ngClass]="{ checked: data['name'] === 'true' }"
-                              [required]="data['mandatory']"
-                              [formControlName]="data['name']"
-                              [value]="'true'"
-                              type="radio"
-                            />
-                            <span class="checkmark"></span>
-                          </label>
+                        <!--DATE FIELDS-->
+                        <div *ngSwitchCase="'DATE'">
+                          <input
+                            autocomplete="off"
+                            type="text"
+                            [required]="data['mandatory']"
+                            [formControlName]="data['name']"
+                            class="form-control mb-3"
+                            bsDatepicker
+                            placeholder="dd/mm/yyyy"
+                            tooltip="Select date"
+                          />
+                          <div
+                            class="text-danger mb-1 small"
+                            *ngIf="
+                              form
+                                .get('fields')
+                                .get(tab)
+                                .get(pill)
+                                .get(data.name).invalid
+                            "
+                          >
+                            {{ data['displayName'] }} is required
+                          </div>
                         </div>
-                        <div class="form-check form-check-inline">
-                          <label class="col-12 customradio"
-                            ><span>No</span>
-                            <input
-                              [ngClass]="{ checked: data['name'] === 'false' }"
-                              [required]="data['mandatory']"
-                              [formControlName]="data['name']"
-                              [value]="'false'"
-                              type="radio"
-                            />
-                            <span class="checkmark"></span>
-                          </label>
+                        <!--BOOLEAN-->
+                        <div *ngSwitchCase="'BOOLEAN'">
+                          <div class="form-check form-check-inline">
+                            <label class="col-12 customradio"
+                              ><span>Yes</span>
+                              <input
+                                [ngClass]="{ checked: data['name'] === 'true' }"
+                                [required]="data['mandatory']"
+                                [formControlName]="data['name']"
+                                [value]="'true'"
+                                type="radio"
+                              />
+                              <span class="checkmark"></span>
+                            </label>
+                          </div>
+                          <div class="form-check form-check-inline">
+                            <label class="col-12 customradio"
+                              ><span>No</span>
+                              <input
+                                [ngClass]="{
+                                  checked: data['name'] === 'false'
+                                }"
+                                [required]="data['mandatory']"
+                                [formControlName]="data['name']"
+                                [value]="'false'"
+                                type="radio"
+                              />
+                              <span class="checkmark"></span>
+                            </label>
+                          </div>
+                          <div
+                            class="text-danger mb-1 small"
+                            *ngIf="
+                              form
+                                .get('fields')
+                                .get(tab)
+                                .get(pill)
+                                .get(data.name).invalid
+                            "
+                          >
+                            {{ data['displayName'] }} is required
+                          </div>
                         </div>
-                        <div
-                          class="text-danger mb-1 small"
-                          *ngIf="form.get('fields').get(tab).get(pill).get(data.name).invalid"
-                        >
-                          {{ data['displayName'] }} is required
-                        </div>
-                      </div>
-                      <!--NUMBER FIELDS-->
-                      <div *ngSwitchCase="'NUMBER'">
-                        <input type="number" class="form-control col-6 mb-3" [formControlName]="data['name']" />
-                        <div
-                          class="text-danger mb-1 small"
-                          *ngIf="form.get('fields').get(tab).get(pill).get(data.name).invalid"
-                        >
-                          {{ data['displayName'] }} is required
+                        <!--NUMBER FIELDS-->
+                        <div *ngSwitchCase="'NUMBER'">
+                          <input
+                            type="number"
+                            class="form-control col-6 mb-3"
+                            [formControlName]="data['name']"
+                          />
+                          <div
+                            class="text-danger mb-1 small"
+                            *ngIf="
+                              form
+                                .get('fields')
+                                .get(tab)
+                                .get(pill)
+                                .get(data.name).invalid
+                            "
+                          >
+                            {{ data['displayName'] }} is required
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </ng-container>
                 </ng-container>
-              </ng-container>
-            </tab>
-          </ng-container>
-        </tabset>
-      </div>
-    </tab>
-  </ng-container>
-</tabset>
+              </tab>
+            </ng-container>
+          </tabset>
+        </div>
+      </tab>
+    </ng-container>
+  </tabset>
 </div>
