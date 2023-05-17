@@ -173,6 +173,19 @@
                               <span class="checkmark"></span>
                             </label>
                           </div>
+                          <div class="form-check form-check-inline">
+                            <label class="col-12 customradio">
+                              <span>Unknown</span>
+                              <input
+                                [ngClass]="{ checked: data['name'] !== 'true' && data['name'] !== 'false' }"
+                                [required]="data['mandatory']"
+                                [formControlName]="data['name']"
+                                [value]="'null'"
+                                type="radio"
+                              />
+                              <span class="checkmark"></span>
+                            </label>
+                          </div>
                           <div
                             class="text-danger mb-1 small"
                             *ngIf="

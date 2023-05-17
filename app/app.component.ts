@@ -126,10 +126,10 @@ export const data = {
       {
         name: 'Main Tab 2 name',
         displayName: 'Main Tab 2 displayname',
-        value: 'true',
+        value: 'null',
         dataType: 'BOOLEAN',
         displayLevel1: 'Main',
-        displayLevel2: 'Main Tab 2',
+        displayLevel2: 'Personal Details',
         displayLevel3: '',
         maxLength: 20,
         mandatory: true,
