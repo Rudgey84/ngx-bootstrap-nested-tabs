@@ -126,7 +126,7 @@ export const data = {
       {
         name: 'Main Tab 2 name',
         displayName: 'Main Tab 2 displayname',
-        value: 'null',
+        value: null,
         dataType: 'BOOLEAN',
         displayLevel1: 'Main',
         displayLevel2: 'Personal Details',

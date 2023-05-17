@@ -177,10 +177,10 @@
                             <label class="col-12 customradio">
                               <span>Unknown</span>
                               <input
-                                [ngClass]="{ checked: data['name'] !== 'true' && data['name'] !== 'false' }"
+                                [ngClass]="{ checked: data['name'] === null }"
                                 [required]="data['mandatory']"
                                 [formControlName]="data['name']"
-                                [value]="'null'"
+                                [value]="null"
                                 type="radio"
                               />
                               <span class="checkmark"></span>
